@@ -1,0 +1,9 @@
+{
+  "run": {
+    "command": "nx start mobile",
+    "startTime": "2025-10-17T05:41:06.121Z",
+    "endTime": "2025-10-17T05:41:07.283Z",
+    "inner": false
+  },
+  "tasks": []
+}

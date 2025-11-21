@@ -331,3 +331,4 @@ sessions/
 # Keep example environment files
 !.env.example
 !.env.template
+node_modules
