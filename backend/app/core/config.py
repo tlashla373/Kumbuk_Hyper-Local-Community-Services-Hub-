@@ -26,9 +26,16 @@ class Settings(BaseSettings):
     NEO4J_USER: Optional[str] = None
     NEO4J_PASSWORD: Optional[str] = None
     
-    # Vertex AI Configuration (for future use)
+    # Vertex AI Configuration
     GOOGLE_CLOUD_PROJECT: Optional[str] = None
     VERTEX_AI_LOCATION: str = "us-central1"
+    
+    # Gemini-Pro Configuration
+    GEMINI_MODEL: str = "gemini-pro"
+    GEMINI_TEMPERATURE: float = 0.2
+    GEMINI_MAX_TOKENS: int = 1024
+    GEMINI_TOP_P: float = 0.8
+    GEMINI_TOP_K: int = 40
     
     # Logging
     LOG_LEVEL: str = "INFO"

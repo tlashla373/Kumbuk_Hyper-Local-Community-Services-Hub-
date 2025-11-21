@@ -1,8 +1,0 @@
-[36mPackager is ready at http://localhost:19000[39m
-[90mStarting project at D:\Cloud Project _Kumbuk\kumbuk_project\Kumbuk_Hyper-Local-Community-Services-Hub-\apps\mobile[39m
-[90mUsing src/app as the root directory for Expo Router.[39m
-[2mStarting Metro Bundler[22m
-Waiting on [4mhttp://localhost:19000[24m
-Logs for your project will appear below.
-[1mWeb[22m [0m[2mapps\mobile\[22m[0m[1mindex.js[22m [47m[37m░░░░░░░░░░░░░░░░[39m[49m[1m  0.0% [22m[2m(0/1)[22m
-[32m[1mWeb[22m Bundled [39m[2m255ms[22m[0m[2m apps\mobile\index.js (202 modules)[22m[0m

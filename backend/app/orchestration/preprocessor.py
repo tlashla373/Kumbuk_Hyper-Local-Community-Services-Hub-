@@ -7,6 +7,13 @@ import logging
 from datetime import datetime
 import re
 
+try:
+    from app.services.prompt_processor import PromptProcessor
+    PROMPT_PROCESSOR_AVAILABLE = True
+except ImportError:
+    PROMPT_PROCESSOR_AVAILABLE = False
+    logging.warning("PromptProcessor not available")
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,6 +28,14 @@ class PreProcessor:
     
     def __init__(self):
         logger.info("PreProcessor initialized")
+        
+        # Initialize Prompt Processor for semantic analysis
+        if PROMPT_PROCESSOR_AVAILABLE:
+            self.prompt_processor = PromptProcessor()
+            logger.info("✅ Prompt Processor integrated")
+        else:
+            self.prompt_processor = None
+            logger.warning("⚠️ Running without Prompt Processor")
     
     async def process(
         self,
@@ -47,19 +62,39 @@ class PreProcessor:
             # Step 1: Clean and normalize message
             cleaned_message = self._clean_message(message)
             
-            # Step 2: Extract entities
-            entities = self._extract_entities(cleaned_message)
-            
-            # Step 3: Load user profile (stub - will be replaced with Firebase call)
+            # Step 2: Load user profile and session context
             user_profile = await self._get_user_profile(user_id)
-            
-            # Step 4: Get session context
             session_context = await self._get_session_context(session_id, user_id)
             
-            # Step 5: Extract keywords and intent signals
+            # Step 3: SEMANTIC ANALYSIS using Prompt Processor (Gemini-Pro)
+            semantic_analysis = None
+            if self.prompt_processor:
+                try:
+                    semantic_analysis = await self.prompt_processor.process_chat(
+                        message=cleaned_message,
+                        user_id=user_id,
+                        conversation_history=session_context.get("history", []),
+                        user_context={
+                            "role": user_profile.get("role"),
+                            "location": user_profile.get("location"),
+                            "preferences": user_profile.get("preferences")
+                        }
+                    )
+                    logger.info(f"🧠 Semantic analysis complete: {semantic_analysis.get('intent')}")
+                except Exception as e:
+                    logger.error(f"Semantic analysis failed: {str(e)}")
+                    semantic_analysis = None
+            
+            # Step 4: Extract entities (use semantic analysis if available, else fallback)
+            if semantic_analysis and semantic_analysis.get("entities"):
+                entities = semantic_analysis["entities"]
+            else:
+                entities = self._extract_entities(cleaned_message)
+            
+            # Step 5: Extract keywords
             keywords = self._extract_keywords(cleaned_message)
             
-            # Step 6: Build preprocessed data
+            # Step 6: Build preprocessed data with semantic analysis
             preprocessed_data = {
                 "original_message": message,
                 "message": cleaned_message,
@@ -72,10 +107,13 @@ class PreProcessor:
                 "session_context": session_context,
                 "context": context or {},
                 "timestamp": datetime.utcnow().isoformat(),
+                "semantic_analysis": semantic_analysis,  # NEW: Gemini-Pro semantic insights
                 "metadata": {
                     "message_length": len(cleaned_message),
                     "has_entities": bool(entities),
-                    "has_session": bool(session_context)
+                    "has_session": bool(session_context),
+                    "has_semantic_analysis": semantic_analysis is not None,
+                    "semantic_confidence": semantic_analysis.get("confidence") if semantic_analysis else None
                 }
             }
             
