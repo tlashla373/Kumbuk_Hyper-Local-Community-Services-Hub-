@@ -82,8 +82,10 @@ web-build/
 .metro-health-check*
 
 # Nx
-.nx/cache
-.nx/workspace-data
+.nx/
+**/nx/cache
+**/nx/workspace-data
+**/.nx/
 
 # ==========================================
 # BUILD OUTPUTS

@@ -9,10 +9,12 @@ The **Prompt Processor** is a semantic analysis service that uses **Vertex AI's 
 ### 🎯 What It Does
 
 1. **Semantic Intent Detection**
+
    - Classifies user intent (service_search, business_query, etc.)
    - Confidence scoring for intent accuracy
 
 2. **Advanced Entity Extraction**
+
    - Locations (Sri Lankan cities)
    - Service types (plumber, electrician, etc.)
    - Price ranges and budget mentions
@@ -20,10 +22,12 @@ The **Prompt Processor** is a semantic analysis service that uses **Vertex AI's 
    - Quality requirements (experienced, certified)
 
 3. **Sentiment Analysis**
+
    - Detects user sentiment (positive, neutral, negative, urgent)
    - Urgency level assessment (low, medium, high, critical)
 
 4. **Semantic Understanding**
+
    - Extracts underlying user needs
    - Contextual comprehension
    - Conversational memory integration
@@ -75,6 +79,7 @@ pip install -r requirements.txt
 ```
 
 This will install:
+
 - `langchain==0.1.0`
 - `langchain-google-vertexai==0.1.0`
 - `langchain-core==0.1.0`
@@ -179,7 +184,7 @@ print(f"Urgency: {semantic['urgency_level']}")
     "filter_by_location",
     "prioritize_available"
   ],
-  "confidence": 0.90,
+  "confidence": 0.9,
   "reasoning": "Clear service request with location and urgency",
   "user_id": "user_123",
   "timestamp": "2025-11-21T10:30:00.000Z",
@@ -216,14 +221,14 @@ from app.services.prompt_processor import PromptProcessor
 
 async def test():
     processor = PromptProcessor()
-    
+
     # Test message
     result = await processor.process_chat(
         message="Find me a plumber in Kandy",
         user_id="test_user",
         user_context={"role": "consumer", "location": "Kandy"}
     )
-    
+
     print(f"Intent: {result['intent']}")
     print(f"Entities: {result['entities']}")
     print(f"Confidence: {result['confidence']}")
@@ -321,6 +326,7 @@ def execute(self, task_plan, user_id, session_id):
 ### Vertex AI Pricing
 
 Gemini-Pro pricing (as of Nov 2024):
+
 - **Input**: $0.00025 per 1K characters
 - **Output**: $0.0005 per 1K characters
 
@@ -333,6 +339,7 @@ Gemini-Pro pricing (as of Nov 2024):
 5. **Region Selection**: Use nearest region for lower latency
 
 Example cost for 1000 messages:
+
 - Average message: 100 characters
 - Average response: 500 characters
 - Cost: ~$0.30 per 1000 messages
@@ -362,21 +369,25 @@ tail -f logs/backend.log | grep "PromptProcessor"
 ### Common Issues
 
 1. **"LangChain not available"**
+
    ```bash
    pip install langchain langchain-google-vertexai
    ```
 
 2. **Authentication Error**
+
    ```bash
    gcloud auth application-default login
    ```
 
 3. **"Permission Denied"**
+
    - Enable Vertex AI API
    - Check service account permissions
    - Verify IAM roles
 
 4. **"Model not found"**
+
    - Check VERTEX_AI_LOCATION
    - Verify model availability in region
 
